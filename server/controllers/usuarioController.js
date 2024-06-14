@@ -1,4 +1,5 @@
 const Usuarios = require('../models/usuarioSchema');
+console.log('Current directory:', __dirname);
 const transporter = require('../emailconfig');
 
 

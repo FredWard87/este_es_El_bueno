@@ -1,6 +1,6 @@
 const Usuarios = require('../models/usuarioSchema');
 console.log('Current directory:', __dirname);
-const transporter = require('../emailconfig');
+const transporter = require('../emailConfig');
 
 
 // Controlador para registrar un nuevo usuario

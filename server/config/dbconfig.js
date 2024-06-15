@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const Usuarios = require('../models/usuarioSchema');
 
+// Cargar variables de entorno desde el archivo .env
+require('dotenv').config();
+
 const MONGODB_URL = process.env.MONGODB_URL;
 
 mongoose.connection.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
@@ -33,6 +36,7 @@ mongoose.connection.on('connected', async () => {
   }
 });
 
+// Conectar a MongoDB
 mongoose.connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch(err => console.error('Error al conectar a MongoDB:', err));
 

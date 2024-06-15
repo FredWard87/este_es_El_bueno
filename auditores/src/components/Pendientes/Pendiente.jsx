@@ -55,28 +55,38 @@ const Pendientes = () => {
                 const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/datos`);
                 if (userData && userData.Correo) {
                     const datosFiltrados = response.data.filter((dato) => 
-                        dato.AuditorLiderEmail === userData.Correo && dato.Estado === "pendiente"
+                        dato.AuditorLiderEmail === userData.Correo && (dato.Estado === "pendiente" || dato.Estado === "Devuelto")
                     );
-
-                // Ordena los datos por duración de manera ascendente
-                datosFiltrados.sort((a, b) => {
-                    const fechaInicioA = obtenerFechaInicio(a.Duracion);
-                    const fechaInicioB = obtenerFechaInicio(b.Duracion);
-
-                    // Primero, comparamos las fechas de inicio
-                    if (fechaInicioA < fechaInicioB) return -1;
-                    if (fechaInicioA > fechaInicioB) return 1;
-                    return 0; // Si ambas fechas de inicio y fin son iguales
-                });
-
-                setDatos(datosFiltrados);
-            } else {
-                console.log('userData o userData.Correo no definidos:', userData);
+        
+                    datosFiltrados.sort((a, b) => {
+                        const fechaInicioA = obtenerFechaInicio(a.Duracion);
+                        const fechaInicioB = obtenerFechaInicio(b.Duracion);
+                        if (fechaInicioA < fechaInicioB) return -1;
+                        if (fechaInicioA > fechaInicioB) return 1;
+                        return 0;
+                    });
+        
+                    setDatos(datosFiltrados);
+        
+                    // Set initial state for checkboxes
+                    const initialCheckboxes = {};
+                    datosFiltrados.forEach((dato, periodIdx) => {
+                        dato.Programa.forEach((programa, programIdx) => {
+                            programa.Descripcion.forEach((desc, descIdx) => {
+                                const fieldKey = `${periodIdx}_${programIdx}_${descIdx}`;
+                                initialCheckboxes[fieldKey] = desc.Criterio;
+                            });
+                        });
+                    });
+                    setSelectedCheckboxes(initialCheckboxes);
+        
+                } else {
+                    console.log('userData o userData.Correo no definidos:', userData);
+                }
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
             }
-        } catch (error) {
-            console.error('Error al obtener los datos:', error);
-        }
-    };
+        };        
 
         obtenerDatos();
     }, [userData]);
@@ -172,7 +182,7 @@ const Pendientes = () => {
                 totalPercentage += percentage;
     
                 try {
-                    await axios.put(`http://localhost:3002/datos/${datos[periodIdx]._id}`, {
+                    await axios.put(`${process.env.REACT_APP_BACKEND_URL}/datos/${datos[periodIdx]._id}`, {
                         programIdx,
                         observaciones,
                         percentage
@@ -186,7 +196,7 @@ const Pendientes = () => {
     
             const totalPercentageAvg = (totalPercentage / numPrograms).toFixed(2);
             try {
-                await axios.put(`http://localhost:3002/datos/${datos[periodIdx]._id}`, {
+                await axios.put(`${process.env.REACT_APP_BACKEND_URL}/datos/${datos[periodIdx]._id}`, {
                     PorcentajeTotal: totalPercentageAvg,
                     Estado: 'Realizada'
                 });
@@ -240,7 +250,7 @@ const Pendientes = () => {
             }
         }
         return '';
-    };
+    };    
     
     const getPercentageClass = (percentage) => {
         if (percentage >= 95) {
@@ -289,7 +299,7 @@ const Pendientes = () => {
                                                             <th colSpan="2">{programa.Nombre}</th>
                                                             <th colSpan="5" className="conformity-header">Conformidad</th>
                                                             <th colSpan="2" className={getPercentageClass(percentages[`${periodIdx}_${programIdx}`])}>
-                                                            Porcentaje: {percentages[`${periodIdx}_${programIdx}`] ? percentages[`${periodIdx}_${programIdx}`].toFixed(2) : 0}%
+                                                                Porcentaje: {percentages[`${periodIdx}_${programIdx}`] ? percentages[`${periodIdx}_${programIdx}`].toFixed(2) : 0}%
                                                             </th>
                                                         </tr>
                                                         <tr>
@@ -311,46 +321,16 @@ const Pendientes = () => {
                                                                 <tr key={descIdx}>
                                                                     <td>{desc.ID}</td>
                                                                     <td className='alingR'>{desc.Requisito}</td>
-                                                                    <td className={getTdClass(periodIdx, programIdx, descIdx, 'Conforme')}>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            name={`Conforme_${periodIdx}_${programIdx}_${descIdx}`}
-                                                                            checked={selectedCheckboxes[`${periodIdx}_${programIdx}_${descIdx}`] === 'Conforme'}
-                                                                            onChange={() => handleCheckboxChange(periodIdx, programIdx, descIdx, 'Conforme')}
-                                                                        />
-                                                                    </td>
-                                                                    <td className={getTdClass(periodIdx, programIdx, descIdx, 'm')}>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            name={`m_${periodIdx}_${programIdx}_${descIdx}`}
-                                                                            checked={selectedCheckboxes[`${periodIdx}_${programIdx}_${descIdx}`] === 'm'}
-                                                                            onChange={() => handleCheckboxChange(periodIdx, programIdx, descIdx, 'm')}
-                                                                        />
-                                                                    </td>
-                                                                    <td className={getTdClass(periodIdx, programIdx, descIdx, 'M')}>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            name={`M_${periodIdx}_${programIdx}_${descIdx}`}
-                                                                            checked={selectedCheckboxes[`${periodIdx}_${programIdx}_${descIdx}`] === 'M'}
-                                                                            onChange={() => handleCheckboxChange(periodIdx, programIdx, descIdx, 'M')}
-                                                                        />
-                                                                    </td>
-                                                                    <td className={getTdClass(periodIdx, programIdx, descIdx, 'C')}>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            name={`C_${periodIdx}_${programIdx}_${descIdx}`}
-                                                                            checked={selectedCheckboxes[`${periodIdx}_${programIdx}_${descIdx}`] === 'C'}
-                                                                            onChange={() => handleCheckboxChange(periodIdx, programIdx, descIdx, 'C')}
-                                                                        />
-                                                                    </td>
-                                                                    <td className={getTdClass(periodIdx, programIdx, descIdx, 'NA')}>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            name={`NA_${periodIdx}_${programIdx}_${descIdx}`}
-                                                                            checked={selectedCheckboxes[`${periodIdx}_${programIdx}_${descIdx}`] === 'NA'}
-                                                                            onChange={() => handleCheckboxChange(periodIdx, programIdx, descIdx, 'NA')}
-                                                                        />
-                                                                    </td>
+                                                                    {['Conforme', 'm', 'M', 'C', 'NA'].map((checkboxName) => (
+                                                                        <td key={checkboxName} className={getTdClass(periodIdx, programIdx, descIdx, checkboxName)}>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                name={`${checkboxName}_${periodIdx}_${programIdx}_${descIdx}`}
+                                                                                checked={selectedCheckboxes[fieldKey] === checkboxName}
+                                                                                onChange={() => handleCheckboxChange(periodIdx, programIdx, descIdx, checkboxName)}
+                                                                            />
+                                                                        </td>
+                                                                    ))}
                                                                     <td className='espacio-test'>
                                                                         <textarea
                                                                             name={`Observaciones_${periodIdx}_${programIdx}_${descIdx}`}
@@ -385,7 +365,8 @@ const Pendientes = () => {
             </div>
             <Fotos open={modalOpen} onClose={() => setModalOpen(false)} onCapture={handleCapture} />
         </div>
-    );       
+    );
+       
 };
 
 export default Pendientes;

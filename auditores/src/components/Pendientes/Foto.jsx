@@ -15,7 +15,7 @@ function Fotos({ open, onClose, onCapture }) {
         detenerCamara();
       }
       const currentStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 1080, height: 720, facingMode: camera } // Reduce la resolución del video
+        video: { width: 1080, height: 720, facingMode: camera }
       });
       setStream(currentStream);
       if (videoDiv.current) {
@@ -35,8 +35,8 @@ function Fotos({ open, onClose, onCapture }) {
   };
 
   const tomarFoto = () => {
-    const w = 1080; // Ancho del canvas igual al ancho del video
-    const h = 720; // Altura del canvas igual a la altura del video
+    const w = 1080;
+    const h = w / (16 / 9);
 
     const video = videoDiv.current;
     const foto = fotoDiv.current;
@@ -48,8 +48,8 @@ function Fotos({ open, onClose, onCapture }) {
       context.drawImage(video, 0, 0, w, h);
       setHayFoto(true);
 
-      // Captura la imagen como una base64 string con calidad ajustada
-      const dataUrl = foto.toDataURL('image/jpeg', 0.8); // 0.8 para reducir el tamaño del archivo
+      // Captura la imagen como una base64 string
+      const dataUrl = foto.toDataURL('image/png');
       onCapture(dataUrl);
     }
   };
@@ -99,7 +99,7 @@ function Fotos({ open, onClose, onCapture }) {
               </Card.Content>
             </Card>
             <Card>
-              <canvas ref={fotoDiv} style={{ width: '100%' }}></canvas>
+              <canvas ref={fotoDiv}></canvas>
               {hayFoto && (
                 <Card.Content>
                   <Button color="red" onClick={cerrarFoto}>

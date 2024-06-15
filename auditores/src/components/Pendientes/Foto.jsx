@@ -15,7 +15,7 @@ function Fotos({ open, onClose, onCapture }) {
         detenerCamara();
       }
       const currentStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 1280, height: 720, facingMode: camera } // Reduce la resolución del video
+        video: { width: 1080, height: 720, facingMode: camera } // Reduce la resolución del video
       });
       setStream(currentStream);
       if (videoDiv.current) {
@@ -35,7 +35,7 @@ function Fotos({ open, onClose, onCapture }) {
   };
 
   const tomarFoto = () => {
-    const w = 1280; // Ancho del canvas igual al ancho del video
+    const w = 1080; // Ancho del canvas igual al ancho del video
     const h = 720; // Altura del canvas igual a la altura del video
 
     const video = videoDiv.current;

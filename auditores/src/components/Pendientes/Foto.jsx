@@ -11,6 +11,9 @@ function Fotos({ open, onClose, onCapture }) {
 
   const verCamara = async () => {
     try {
+      if (stream) {
+        detenerCamara();
+      }
       const currentStream = await navigator.mediaDevices.getUserMedia({
         video: { width: 420, height: 210, facingMode: camera }
       });
@@ -61,7 +64,7 @@ function Fotos({ open, onClose, onCapture }) {
   };
 
   const cambiarCamara = () => {
-    setCamera((prevCamera) => (prevCamera === 'user' ? 'environment' : 'user'));
+    setCamera(prevCamera => (prevCamera === 'user' ? 'environment' : 'user'));
   };
 
   useEffect(() => {
@@ -74,7 +77,7 @@ function Fotos({ open, onClose, onCapture }) {
     return () => {
       detenerCamara();
     };
-  }, [open, camera]); // Agregar 'camera' como dependencia
+  }, [open, camera]);
 
   return (
     <Modal open={open} onClose={onClose} size="small" className="fixed-modal">

@@ -15,7 +15,7 @@ function Fotos({ open, onClose, onCapture }) {
         detenerCamara();
       }
       const currentStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 1080, height: 720, facingMode: camera }
+        video: { width: 1920, height: 1080, facingMode: camera } // Aumenta la resolución del video
       });
       setStream(currentStream);
       if (videoDiv.current) {
@@ -35,8 +35,8 @@ function Fotos({ open, onClose, onCapture }) {
   };
 
   const tomarFoto = () => {
-    const w = 430;
-    const h = w / (16 / 9);
+    const w = 1920; // Ancho del canvas igual al ancho del video
+    const h = 1080; // Altura del canvas igual a la altura del video
 
     const video = videoDiv.current;
     const foto = fotoDiv.current;
@@ -99,7 +99,7 @@ function Fotos({ open, onClose, onCapture }) {
               </Card.Content>
             </Card>
             <Card>
-              <canvas ref={fotoDiv}></canvas>
+              <canvas ref={fotoDiv} style={{ width: '100%' }}></canvas>
               {hayFoto && (
                 <Card.Content>
                   <Button color="red" onClick={cerrarFoto}>

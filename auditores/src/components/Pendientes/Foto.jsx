@@ -15,7 +15,7 @@ function Fotos({ open, onClose, onCapture }) {
         detenerCamara();
       }
       const currentStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 420, height: 210, facingMode: camera }
+        video: { width: 1080, height: 720, facingMode: camera }
       });
       setStream(currentStream);
       if (videoDiv.current) {

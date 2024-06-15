@@ -8,11 +8,7 @@ import RegistroUsuarioModal from './RegistroUsuarioModal';
 import CalificacionModal from './CalificacionModal';
 
 const UsuariosRegistro = () => {
-  const predefinedAreas = [
-    'Calidad', 'Mantenimiento', 'Planta', 'Sistema de Gestión de Calidad e Inocuidad', 
-    'Almacenes', 'preparación', 'envasado y embalaje', 'Proceso de Producción', 
-    'Aseguramiento de Calidad', 'Áreas de Proceso', 'SGCI Envasadora Aguida'
-  ];
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,9 +23,7 @@ const UsuariosRegistro = () => {
     Puesto: '',
     FechaIngreso: '',
     Escolaridad: '',
-    Área: null,
-    Carrera:'',
-    customArea: '', 
+    Departamento:'',
     AñosExperiencia: '',
     FormaParteEquipoInocuidad: false,
     calificaciones: [] // Inicializar como un array vacío
@@ -86,7 +80,7 @@ const UsuariosRegistro = () => {
       Escolaridad: usuario.Escolaridad || '',
       //cosa movida carrera
       Carrera: usuario.Carrera || '',
-      Área: usuario.Área || '',
+      Departamento: usuario.Departamento || '',
       AñosExperiencia: usuario.AñosExperiencia || '',
       FormaParteEquipoInocuidad: usuario.FormaParteEquipoInocuidad || false,
       PuntuacionEspecialidad : usuario.PuntuacionEspecialidad || '',
@@ -328,31 +322,6 @@ const UsuariosRegistro = () => {
                   />
                 </div>
 
-                <div className="form-group">
-                <label>Área:</label>
-                <select name="Área" value={editFormData.Área || ''} onChange={handleEditFormChange} required>
-                  <option value="">Seleccione un área</option>
-                  {predefinedAreas.map((area) => (
-                    <option key={area} value={area}>
-                      {area}
-                    </option>
-                  ))}
-                  <option value="custom">Otra</option>
-                </select>
-                {editFormData.Área === 'custom' && (
-                  <div className="form-group">
-                    <label>Área Personalizada:</label>
-                    <input
-                      type="text"
-                      name="customArea"
-                      value={customArea}
-                      onChange={handleEditFormChange}
-                      placeholder="Ingrese un área personalizada"
-                      required
-                    />
-                  </div>
-                )}
-              </div>
 
                 {(usuarioAEditar.TipoUsuario === 'auditor' || usuarioAEditar.TipoUsuario === 'Administrador' || usuarioAEditar.TipoUsuario === 'empleado') && (
                   <>
@@ -451,7 +420,7 @@ const UserCard = ({ user, formatDate, calculateYearsInCompany, onEditClick, onDe
       <p><strong>Correo:</strong> {user.Correo}</p>
       <p><strong>Tipo de usuario:</strong> {user.TipoUsuario}</p>
       <p><strong>Puesto:</strong> {user.Puesto}</p>
-      <p><strong>Área:</strong> {user.Área}</p> {}
+      <p><strong>Departamento:</strong> {user.Departamento}</p> {}
       {(user.TipoUsuario === 'auditor' || user.TipoUsuario === 'Administrador'|| user.TipoUsuario === 'empleado') && (
         <>
           {user.FechaIngreso && (

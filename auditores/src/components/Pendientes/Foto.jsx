@@ -15,7 +15,7 @@ function Fotos({ open, onClose, onCapture }) {
         detenerCamara();
       }
       const currentStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 1920, height: 1080, facingMode: camera } // Aumenta la resolución del video
+        video: { width: 1280, height: 720, facingMode: camera } // Reduce la resolución del video
       });
       setStream(currentStream);
       if (videoDiv.current) {
@@ -35,8 +35,8 @@ function Fotos({ open, onClose, onCapture }) {
   };
 
   const tomarFoto = () => {
-    const w = 1920; // Ancho del canvas igual al ancho del video
-    const h = 1080; // Altura del canvas igual a la altura del video
+    const w = 1280; // Ancho del canvas igual al ancho del video
+    const h = 720; // Altura del canvas igual a la altura del video
 
     const video = videoDiv.current;
     const foto = fotoDiv.current;
@@ -48,8 +48,8 @@ function Fotos({ open, onClose, onCapture }) {
       context.drawImage(video, 0, 0, w, h);
       setHayFoto(true);
 
-      // Captura la imagen como una base64 string
-      const dataUrl = foto.toDataURL('image/png');
+      // Captura la imagen como una base64 string con calidad ajustada
+      const dataUrl = foto.toDataURL('image/jpeg', 0.8); // 0.8 para reducir el tamaño del archivo
       onCapture(dataUrl);
     }
   };

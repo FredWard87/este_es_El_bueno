@@ -20,6 +20,7 @@ mongoose.connection.on('connected', async () => {
         FechaIngreso: new Date(),
         Correo: 'ruben@gmail.com',
         Contraseña: 'root321', // Asegúrate de encriptar esta contraseña en un entorno de producción
+        Departamento: 'general',
         Puesto: 'Global',
         Escolaridad: 'Ingenieria en Alimentos',
         TipoUsuario: 'Administrador'
